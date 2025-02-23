@@ -11,7 +11,7 @@ struct key {
  Bystring iName;
  Bysize iSize;
  Bysize *iTypes;
- Bysize *iTUnits;
+ Bysize *iTSlots;
 };
 typedef struct key ByKey;
 struct tape {

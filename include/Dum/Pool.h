@@ -1,5 +1,5 @@
-#ifndef HBYTE_POOL
-#define HBYTE_POOL
+#ifndef POOL
+#define POOL
 
 #include <Dum/Interface.h>
 
@@ -38,4 +38,4 @@ extern By404 stSegmetation(size_t _blockSize, ByPool *_mem);
 
 #endif // !MEMORY_POOL
 
-#endif // !HBYTE_POOL
+#endif // !POOL
