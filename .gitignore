@@ -1,0 +1,4 @@
+bin/
+build/
+/CMakeLists.txt
+/compile_flags.txt
