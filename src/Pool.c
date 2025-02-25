@@ -1,5 +1,6 @@
 #include <Dum/Interface.h>
 #include <Dum/Pool.h>
+#include <stddef.h>
 
 // Pool Funcs
 By404 allocPool(ByPool *_allo, size_t _size) {
@@ -70,6 +71,13 @@ Address allocBlockdy(size_t _blockSize, ByPool *_mem) {
      return mem;
   }
   return NULL;
+}
+By404 reallocBlock(size_t _resize, Address _memHead, ByPool *_mem) {
+  size_t memPos = calPos(_memHead, _mem);
+  size_t blockMaxSize = calMaxSize(_mem);
+  Byte4 *allocInt = (Byte4*)(_mem->iMem + (sizeof(Byte*)) + 
+    (memPos + (blockMaxSize - sizeof(Byte4))));
+  *allocInt = _resize;
 }
 
 By404 desallocBlockdy(Address _memHead, ByPool *_mem) {

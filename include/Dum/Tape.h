@@ -1,25 +1,23 @@
-#ifndef TAPES
-#define TAPES
+#ifndef TAPE
+#define TAPE
 
 #define DUM_EXTYPE
 #include <Dum/Interface.h>
 #include <Dum/Pool.h>
 
-#ifndef TAPES_TYPES
-
-struct key {
- Bystring iName;
+struct form {
  Bysize iSize;
  Bysize *iTypes;
  Bysize *iTSlots;
+ Bysize *ITSize;
 };
-typedef struct key ByKey;
+typedef struct form ByForm;
 struct tape {
-  ByKey *iSegments;
-  ByPool *iMem;
+  Bystring iName;
+  ByForm iForm;
+  Address iHead;
+  ByPool iMem;
 };
 typedef struct tape ByTape;
 
-#endif // !TAPES_TYPES
-
-#endif // !TAPES
+#endif // !TAPE
