@@ -1,6 +1,7 @@
 #include <Dum/Interface.h>
 #include <Dum/Pool.h>
 
+// Pool Funcs
 By404 allocPool(ByPool *_allo, size_t _size) {
   _allo->iMem = calloc(_size, sizeof(Byte));
   _allo->iHead = _allo->iMem;
@@ -25,6 +26,7 @@ By404 desallocPool(ByPool *_des) {
   _des->iEnd = NULL;
 }
 
+// Block Funcs
 Address allocBlock(ByPool *_mem) {
   Byte *mem = (_mem->iHead + sizeof(Byte*));
   Byte *nextPtr = *(Byte**)_mem->iHead;
@@ -77,6 +79,7 @@ By404 desallocBlockdy(Address _memHead, ByPool *_mem) {
   _mem->iHead = (_mem->iMem + pos);
 }
 
+// Calculator Funcs
 size_t calPool(ByPool *_mem) {
   for (uint32_t i = 0; true; i++) {
     if ((_mem->iMem + i) == *_mem->iEnd)
@@ -94,8 +97,7 @@ size_t calBlock(uint32_t _index, ByPool *_mem) {
       return *getSize;
     }
   }
-  getSize = (int*)(_mem->iMem + (memSize + sizeof(Byte*)));
-  return *getSize;
+  return 0;
 }
 size_t calMaxSize(ByPool *_mem) {
   int *getSize;
@@ -131,6 +133,8 @@ size_t calIndex(Address _memHead, ByPool *_mem) {
   return 0;
 }
 
+
+// Segment Funcs
 By404 stSegmetation(size_t _blockSize, ByPool *_mem) {
   size_t memSize = calPool(_mem);
   Byte **alloPtr;
