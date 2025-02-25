@@ -1,4 +1,4 @@
-#include <HByte/Pool.h>
+#include <Dum/Pool.h>
 #include <stdio.h>
 
 int main(void)
@@ -6,7 +6,7 @@ int main(void)
   ByPool mem;
   allocPool(&mem, 256);
 
-  dySegmetation(32, &mem);
+  dySegmetation(100, &mem);
   printf("Pool Size -> %d \nBlock Max Size -> %d \n\n",
          calPool(&mem), calBlock(0, &mem));
 

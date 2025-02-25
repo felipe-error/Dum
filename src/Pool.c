@@ -52,14 +52,17 @@ Address allocBlockdy(size_t _blockSize, ByPool *_mem) {
 
   if (nextPtr != NULL) {
      if(_blockSize < (blockMaxSize - sizeof(Byte4))) {
-      alloInt = (Byte4*)(_mem->iHead + (sizeof(Byte*) + _blockSize));  
+      alloInt = (Byte4*)(_mem->iHead + (sizeof(Byte*) + 
+      (blockMaxSize - sizeof(Byte4))));  
       COPY_BYTES(alloInt, _blockSize);
-      _mem->iEnd[blockIndex + 1] = (_mem->iHead + (sizeof(Byte*) + _blockSize));
+      _mem->iEnd[blockIndex + 1] = (_mem->iHead + (sizeof(Byte*) +
+        (blockMaxSize - sizeof(Byte4))));
     } else {
        alloInt = (Byte4*)(_mem->iHead + sizeof(Byte*) + 
         (blockMaxSize - sizeof(Byte4)));  
       COPY_BYTES(alloInt, (blockMaxSize - sizeof(Byte4)));
-      _mem->iEnd[blockIndex + 1] = (_mem->iHead + (sizeof(Byte*) + (blockMaxSize - sizeof(Byte4))));
+      _mem->iEnd[blockIndex + 1] = (_mem->iHead + (sizeof(Byte*) +
+        (blockMaxSize - sizeof(Byte4))));
     }
     _mem->iHead = nextPtr;
      return mem;
