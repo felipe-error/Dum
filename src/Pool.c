@@ -3,25 +3,23 @@
 #include <stddef.h>
 
 // Pool Funcs
-By404 allocPool(ByPool *_allo, size_t _size) {
-  _allo->iMem = calloc(_size, sizeof(Byte));
+By404 allocPool(ByPool *_allo, Bysize _count) {
+  ALLOC_MEM(_allo->iMem, _count);
   _allo->iHead = _allo->iMem;
 
-  _allo->iEnd = calloc(1, sizeof(Byte**));
-  *_allo->iEnd = (_allo->iMem + ((_size) - (sizeof(Byte*) + sizeof(int))));
+  ALLOC_ENDPOINTS(_allo->iEnd, 1);
+  *_allo->iEnd = (_allo->iMem + ((_count) - (sizeof(Byte*) + sizeof(int))));
 
-  for (uint32_t i = 0; i < _size; i++) {
+  for (uint32_t i = 0; i < _count; i++) {
    _allo->iMem[i] = 1;
   }
 
-  Byte **alloPtr = (Byte**)_allo->iMem;
-  *alloPtr = NULL;
-  alloPtr = (Byte**)*_allo->iEnd;
-  *alloPtr = NULL;
+  MEM_COPY_PTR(_allo->iMem, NULL);
+  MEM_COPY_PTR(*_allo->iEnd, NULL);
 }
 By404 desallocPool(ByPool *_des) {
-  free(_des->iMem);
-  free(_des->iEnd);
+  FREE(_des->iMem);
+  FREE(_des->iEnd);
   _des->iMem = NULL;
   _des->iHead = NULL;
   _des->iEnd = NULL;
@@ -29,8 +27,8 @@ By404 desallocPool(ByPool *_des) {
 
 // Block Funcs
 Address allocBlock(ByPool *_mem) {
-  Byte *mem = (_mem->iHead + sizeof(Byte*));
-  Byte *nextPtr = *(Byte**)_mem->iHead;
+  Byte *mem = ACCESSIBLE_MEM(_mem->iHead);
+  Byte *nextPtr = MEM_READ_PTR(_mem->iHead);
 
   if (nextPtr != NULL) {
     _mem->iHead = nextPtr;
@@ -40,8 +38,7 @@ Address allocBlock(ByPool *_mem) {
 }
 By404 desallocBlock(Address _memHead, ByPool *_mem) {
   size_t pos = calPos(_memHead, _mem);
-  Byte **allocPtr = (Byte**)(_mem->iMem + pos);
-  COPY_BYTES(allocPtr,  _mem->iHead);
+  MEM_COPY_PTR((_mem->iMem + pos), _memHead);
   _mem->iHead = (_mem->iMem + pos);
 }
 
@@ -143,17 +140,14 @@ size_t calIndex(Address _memHead, ByPool *_mem) {
 
 
 // Segment Funcs
-By404 stSegmetation(size_t _blockSize, ByPool *_mem) {
+By404 stSegmetation(Bysize _bSize, ByPool *_mem) {
   size_t memSize = calPool(_mem);
-  Byte **alloPtr;
-  Byte4 *alloInt = (Byte4*)(_mem->iMem + (memSize + sizeof(Byte*)));
-  COPY_BYTES(alloInt, _blockSize);
+  MEM_COPY_INT((_mem->iMem + (memSize + sizeof(Byte*))), _bSize);
 
-  for(uint32_t i = 0; i < floor(((double)memSize / (sizeof(Byte**) + _blockSize))); i++) {
-    alloPtr = (Byte**)(_mem->iMem + (sizeof(Byte*) + _blockSize) * i);
-    if(i < (floor(((double)memSize / (sizeof(Byte**) + _blockSize))) - 1))
-    COPY_BYTES(alloPtr, &_mem->iMem[(sizeof(Byte*) + _blockSize) * (i + 1)]);
-    else *alloPtr = NULL;
+  for(uint32_t i = 0; i < floor(((double)memSize / (sizeof(Byte**) + _bSize))); i++) {
+    if(i < (floor(((double)memSize / (sizeof(Byte**) + _bSize))) - 1))
+    MEM_COPY_PTR(JUMP_INTO_MEM(_mem->iMem, _bSize, i), JUMP_INTO_MEM(_mem->iMem, _bSize, (i + 1)));
+    else MEM_COPY_PTR(JUMP_INTO_MEM(_mem->iMem, _bSize, i), NULL);
   }
 }
 

@@ -19,9 +19,9 @@ extern By404 allocPool(ByPool *_allo, size_t _size);
 extern By404 desallocPool(ByPool *_des);
 // Alloc/Desalloc Blocks
 extern Address allocBlockdy(size_t _blockSize, ByPool *_mem);
+extern By404 reallocBlock(size_t _resize, Address _memHead, ByPool *_mem);
 extern By404 desallocBlockdy(Address _memHead, ByPool *_mem);
 extern Address allocBlock(ByPool *_mem);
-extern By404 reallocBlock(size_t _resize, Address _memHead, ByPool *_mem);
 extern By404 desallocBlock(Address _memHead, ByPool *_mem);
 // Calculator Pool Size
 extern size_t calPool(ByPool *_mem);
