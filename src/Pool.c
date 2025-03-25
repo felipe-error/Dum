@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 // Pool Funcs
-By404 allocPool(ByPool *_allo, Bysize _count) {
+void alloc_MEMPOOL(Size _count ,MEM_POOL *_allo) {
   ALLOC_MEM(_allo->iMem, _count);
   _allo->iHead = _allo->iMem;
 
@@ -17,7 +17,7 @@ By404 allocPool(ByPool *_allo, Bysize _count) {
   MEM_COPY_PTR(_allo->iMem, NULL);
   MEM_COPY_PTR(*_allo->iEnd, NULL);
 }
-By404 desallocPool(ByPool *_des) {
+void desalloc_MEMPOOL(MEM_POOL *_des) {
   FREE(_des->iMem);
   FREE(_des->iEnd);
   _des->iMem = NULL;
@@ -26,7 +26,7 @@ By404 desallocPool(ByPool *_des) {
 }
 
 // Block Funcs
-Address allocBlock(ByPool *_mem) {
+Address stAllocBlock(MEM_POOL *_mem) {
   Byte *mem = ACCESSIBLE_MEM(_mem->iHead);
   Byte *nextPtr = MEM_READ_PTR(_mem->iHead);
 
@@ -36,19 +36,19 @@ Address allocBlock(ByPool *_mem) {
   }
   return NULL;
 }
-By404 desallocBlock(Address _memHead, ByPool *_mem) {
-  size_t pos = calPos(_memHead, _mem);
+void stDesallocBlock(Address _memHead, MEM_POOL *_mem) {
+  Size pos = calPos(_memHead, _mem);
   MEM_COPY_PTR((_mem->iMem + pos), _memHead);
   _mem->iHead = (_mem->iMem + pos);
 }
 
-Address allocBlockdy(size_t _blockSize, ByPool *_mem) { 
-  size_t blockMaxSize = calMaxSize(_mem); 
+Address allocBlockdy(int _blockSize, MEM_POOL *_mem) { 
+  Size blockMaxSize = calMaxSize(_mem); 
   Byte4 *alloInt;
   Byte *mem = (_mem->iHead + sizeof(Byte*));
   Byte *nextPtr = *(Byte**)_mem->iHead;
 
-  size_t blockIndex = calIndex(mem, _mem); 
+  Size blockIndex = calIndex(mem, _mem); 
 
   if (nextPtr != NULL) {
      if(_blockSize < (blockMaxSize - sizeof(Byte4))) {
@@ -69,32 +69,32 @@ Address allocBlockdy(size_t _blockSize, ByPool *_mem) {
   }
   return NULL;
 }
-By404 reallocBlock(size_t _resize, Address _memHead, ByPool *_mem) {
-  size_t memPos = calPos(_memHead, _mem);
-  size_t blockMaxSize = calMaxSize(_mem);
+void reallocBlock(int _resize, Address _memHead, MEM_POOL *_mem) {
+  Size memPos = calPos(_memHead, _mem);
+  Size blockMaxSize = calMaxSize(_mem);
   Byte4 *allocInt = (Byte4*)(_mem->iMem + (sizeof(Byte*)) + 
     (memPos + (blockMaxSize - sizeof(Byte4))));
   *allocInt = _resize;
 }
 
-By404 desallocBlockdy(Address _memHead, ByPool *_mem) {
-  size_t pos = calPos(_memHead, _mem);
+void desallocBlockdy(Address _memHead, MEM_POOL *_mem) {
+  Size pos = calPos(_memHead, _mem);
   Byte **allocPtr = (Byte**)(_mem->iMem + pos);
   COPY_BYTES(allocPtr,  _mem->iHead);
   _mem->iHead = (_mem->iMem + pos);
 }
 
 // Calculator Funcs
-size_t calPool(ByPool *_mem) {
-  for (uint32_t i = 0; true; i++) {
+Size calPool(MEM_POOL *_mem) {
+  for (Size i = 0; true; i++) {
     if ((_mem->iMem + i) == *_mem->iEnd)
       return i;
   }
   return 0;
 }
-size_t calBlock(uint32_t _index, ByPool *_mem) {
+Size calBlock(uint32_t _index, MEM_POOL *_mem) {
   int *getSize;
-  size_t memSize = calPool(_mem);
+  Size memSize = calPool(_mem);
 
   for (uint32_t i = 0; i < memSize; i++) {
     if((_mem->iMem + i) == *(_mem->iEnd + _index)) {
@@ -104,20 +104,20 @@ size_t calBlock(uint32_t _index, ByPool *_mem) {
   }
   return 0;
 }
-size_t calMaxSize(ByPool *_mem) {
+Size calMaxSize(MEM_POOL *_mem) {
   int *getSize;
-  size_t memSize = calPool(_mem);
+  Size memSize = calPool(_mem);
 
   getSize = (int*)(_mem->iMem + (memSize + sizeof(Byte*)));
   return *getSize;
 }
-size_t calSegSize(Address _memHead, ByPool *_mem) {
+Size calSegSize(Address _memHead, MEM_POOL *_mem) {
   return calBlock(calIndex(_memHead, _mem) + 1, _mem);
 }
 
-size_t calPos(Address _memHead, ByPool *_mem) {
-  size_t blockSize = calMaxSize(_mem); 
-  size_t memSize = calPool(_mem);
+Size calPos(Address _memHead, MEM_POOL *_mem) {
+  Size blockSize = calMaxSize(_mem); 
+  Size memSize = calPool(_mem);
 
   for (uint32_t i = 0; i < floor(((double)memSize / (sizeof(Byte*) + blockSize))); i++) {
     if((_mem->iMem + ((sizeof(Byte*) + blockSize) * i) + sizeof(Byte*)) == _memHead)
@@ -126,9 +126,9 @@ size_t calPos(Address _memHead, ByPool *_mem) {
 
   return 0;
 }
-size_t calIndex(Address _memHead, ByPool *_mem) {
-  size_t blockSize = calMaxSize(_mem); 
-  size_t memSize = calPool(_mem);
+Size calIndex(Address _memHead, MEM_POOL *_mem) {
+  Size blockSize = calMaxSize(_mem); 
+  Size memSize = calPool(_mem);
 
   for (uint32_t i = 0; i < floor(((double)memSize / (sizeof(Byte*) + blockSize))); i++) {
     if((_mem->iMem + ((sizeof(Byte*) + blockSize) * i) + sizeof(Byte*)) == _memHead)
@@ -140,8 +140,8 @@ size_t calIndex(Address _memHead, ByPool *_mem) {
 
 
 // Segment Funcs
-By404 stSegmetation(Bysize _bSize, ByPool *_mem) {
-  size_t memSize = calPool(_mem);
+void Static_Segmetation(Size _bSize, MEM_POOL *_mem) {
+  Size memSize = calPool(_mem);
   MEM_COPY_INT((_mem->iMem + (memSize + sizeof(Byte*))), _bSize);
 
   for(uint32_t i = 0; i < floor(((double)memSize / (sizeof(Byte**) + _bSize))); i++) {
@@ -151,13 +151,13 @@ By404 stSegmetation(Bysize _bSize, ByPool *_mem) {
   }
 }
 
-By404 dySegmetation(size_t _blockSize, ByPool *_mem) {
-  size_t memSize = calPool(_mem);
+void Dynamical_Segmetation(Size _blockSize, MEM_POOL *_mem) {
+  Size memSize = calPool(_mem);
   Byte **alloPtr;
   Byte4 *alloInt = (Byte4*)(_mem->iMem + (memSize + sizeof(Byte*)));
   COPY_BYTES(alloInt, _blockSize);
 
-  Byte **endpoints = calloc((size_t)
+  Byte **endpoints = calloc((Size)
                            floor(((double)memSize / 
                                  (sizeof(Byte**) + _blockSize))) + 1, sizeof(Byte*));
   endpoints[0] = *_mem->iEnd;

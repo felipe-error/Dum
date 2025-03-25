@@ -11,30 +11,33 @@ struct memPool {
   Byte *iHead;
   Byte **iEnd;
 };
-typedef struct memPool ByPool;
+typedef struct memPool MEM_POOL;
 
 
 // Alloc/Pool Pool
-extern By404 allocPool(ByPool *_allo, size_t _size);
-extern By404 desallocPool(ByPool *_des);
+extern void alloc_MEMPOOL(Size _size, MEM_POOL *_allo);
+extern void desalloc_MEMPOOL(MEM_POOL *_des);
 // Alloc/Desalloc Blocks
-extern Address allocBlockdy(size_t _blockSize, ByPool *_mem);
-extern By404 reallocBlock(size_t _resize, Address _memHead, ByPool *_mem);
-extern By404 desallocBlockdy(Address _memHead, ByPool *_mem);
-extern Address allocBlock(ByPool *_mem);
-extern By404 desallocBlock(Address _memHead, ByPool *_mem);
+extern Address allocBlockdy(int _blockSize, MEM_POOL *_mem);
+extern void reallocBlock(int _resize, Address _memHead, MEM_POOL *_mem);
+extern void desallocBlockdy(Address _memHead, MEM_POOL *_mem);
+extern Address stAllocBlock(MEM_POOL *_mem);
+extern void stDesallocBlock(Address _memHead, MEM_POOL *_mem);
 // Calculator Pool Size
-extern size_t calPool(ByPool *_mem);
+extern Size calPool(MEM_POOL *_mem);
 // Calculator Blocks Size
-extern size_t calBlock(uint32_t _index, ByPool *_mem);
-extern size_t calMaxSize(ByPool *_mem);
-extern size_t calSegSize(Address _memHead, ByPool *_mem);
+extern Size calBlock(uint32_t _index, MEM_POOL *_mem);
+extern Size calMaxSize(MEM_POOL *_mem);
+extern Size calSegSize(Address _memHead, MEM_POOL *_mem);
 // Calculator Position
-extern size_t calPos(Address _memHead, ByPool *_mem);
-extern size_t calIndex(Address _memHead, ByPool *_mem);
+extern Size calPos(Address _memHead, MEM_POOL *_mem);
+extern Size calIndex(Address _memHead, MEM_POOL *_mem);
 // Segment Memory
-extern By404 dySegmetation(size_t _blockSize, ByPool *_mem);
-extern By404 stSegmetation(size_t _blockSize, ByPool *_mem);
+extern By404 Dynamical_Segmetation(Size _blockSize, MEM_POOL *_mem);
+extern By404 Static_Segmetation(Size _blockSize, MEM_POOL *_mem);
+
+#define ALLOC_MEMPOOL(pool, size) alloc_MEMPOOL(size, pool)
+#define FREE_MEMPOOL(des) desalloc_MEMPOOL(des)
 
 #endif // !MEMORY_POOL
 
