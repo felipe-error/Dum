@@ -14,7 +14,7 @@ typedef uint64_t           Byte8;
 typedef uint32_t           Byte4, uint;
 typedef uint16_t           Byte2;
 typedef uint8_t            Byte;
-typedef void               By404, *Address;
+typedef void               By404, *Address, *Memory;
 typedef const char*        TEXT_char;
 typedef const char* const  STATIC_char;
 typedef int8_t             SMALL, int8;
@@ -28,6 +28,8 @@ typedef size_t             Size;
 
 #ifndef INTERFACE_MACROS
 #define INTERFACE_MACROS
+
+#define INVALID_BLOCK NULL
 
 #define COPY_BYTES(dest, src) (*(dest) = (src))
 
