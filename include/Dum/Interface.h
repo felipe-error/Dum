@@ -53,7 +53,7 @@ typedef size_t             Size, MEM_Local, MEM_Size;
 #define JUMP_INTO_MEM(mem, blockSize, count) ((mem) + ((blockSize + sizeof(Byte*)) * count))
 
 // MEM Operations
-#define MEM_COPY_BYTE(dest, src) (*(Byte*)(dest) = *(Byte*)(src))
+#define MEM_COPY_BYTE(dest, src) (*(dest) = *(src))
 #define MEM_COPY_SHORT(dest, src) (*(short*)(dest) = (src))
 #define MEM_COPY_INT(dest, src) (*(int*)(dest) = (src))
 #define MEM_COPY_FLOAT(dest, src) (*(float*)(dest) = (src))

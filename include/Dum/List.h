@@ -14,15 +14,14 @@ struct dyVec {
   MEM_Size iDtSize;
   Expected *iHead;
 };
-typedef struct dyVec DynamicalList;
+typedef struct dyVec DynamicalList, List;
 
 extern MEM_Local cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit);
 
 extern void swap_MEM(DynamicalList *_dest, Memory _mem, MEM_Size _size);
-extern ERROR swap_MEM_and_COPY(DynamicalList *_dest, Memory _mem, MEM_Size _memSize);
-extern ERROR Swap_MEM_and_ADD(DynamicalList *_dest);
+extern void swap_MEM_and_COPY(DynamicalList *_dest, Memory _mem, MEM_Size _size);
 
-extern ERROR add_Element(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory _mem);
+extern ERROR add_Element(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem);
 
 #define MAKE_StaticList(name, type, limit) \
 typedef struct { type iData[limit]; MEM_Size iDtSize; type *iHead; } name 
@@ -43,11 +42,12 @@ typedef struct { type *iData; MEM_Size iDtSize; type *iHead; } name
 (cal_HeadPos((Memory)(list).iData, (Memory)(list).iHead, (list).iDtSize))
 
 #define SCRAPS(list) \
-(List_LIMIT(list) - LIST_SIZE(list))  
+(List_LIMIT(list) - List_SIZE(list))  
 
 #define GET_ARRAY(list) \
 (list.iData)
-#define LIST_ADD(list, data, type) \
-add_Element(sizeof(type), data, SCRAPS(list), (list.iHead + 0))
+#define List_ADD(list, data, type) \
+(add_Element(sizeof(type), data, SCRAPS(list), (Memory*)&list.iHead))
+
 
 #endif // !BY_LIST
