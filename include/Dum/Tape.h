@@ -8,9 +8,10 @@
 struct section {
   TEXT_char iName;
   ByteWidth iSize;
+  MEM_Local iLocal;
 };
 typedef struct section Section;
-MAKE_StaticVector(Section_list, Section, 256);
+MAKE_StaticVector(Section_list, Section, Section_LIMIT);
 
 struct tape {
   Section_list iSections; 

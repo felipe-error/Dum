@@ -14,20 +14,28 @@ typedef uint64_t           Byte8;
 typedef uint32_t           Byte4, uint;
 typedef uint16_t           Byte2;
 typedef uint8_t            Byte, Expected;
-typedef void               By404,  *Address, *Memory;
+typedef void               By404,  *Address, *Memory, *Data;
 typedef const char*        TEXT_char;
 typedef const char* const  STATIC_char;
 typedef int8_t             SMALL, int8;
 typedef int16_t            SHORT, int16;
 typedef int16_t            INT, ByteWidth, ERROR, int32;
 typedef int64_t            LONG, int64;
-typedef size_t             Size; 
+typedef size_t             Size, MEM_Local, MEM_Size;
 
 
 #endif // !INTEFACE_TYPES
 
 #ifndef INTERFACE_MACROS
 #define INTERFACE_MACROS
+
+#define Section_LIMIT 128
+
+// ERROR's/UTIL CONST's
+#define NO_ERROR 0
+#define HEAD_NOT_FOUND 0
+
+#define ADD_FAILED 1
 
 #define INVALID_BLOCK NULL
 
@@ -45,7 +53,7 @@ typedef size_t             Size;
 #define JUMP_INTO_MEM(mem, blockSize, count) ((mem) + ((blockSize + sizeof(Byte*)) * count))
 
 // MEM Operations
-#define MEM_COPY_BYTE(dest, src) (*(dest) = *(src))
+#define MEM_COPY_BYTE(dest, src) (*(Byte*)(dest) = *(Byte*)(src))
 #define MEM_COPY_SHORT(dest, src) (*(short*)(dest) = (src))
 #define MEM_COPY_INT(dest, src) (*(int*)(dest) = (src))
 #define MEM_COPY_FLOAT(dest, src) (*(float*)(dest) = (src))

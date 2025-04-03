@@ -18,6 +18,7 @@ void alloc_MEMPOOL(Size _count ,MEM_POOL *_allo) {
 
   MEM_COPY_PTR(_allo->iMem, NULL);
   MEM_COPY_PTR(*_allo->iEnd, NULL);
+
 }
 void desalloc_MEMPOOL(MEM_POOL *_des) {
   FREE(_des->iMem);
