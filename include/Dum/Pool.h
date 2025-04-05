@@ -27,6 +27,7 @@ extern StaticBlock alloc_StaticBlock(int _chcSize, MEM_POOL *_mem);
 extern StaticBlock realloc_StaticBlock(int _chcSize, StaticBlock _memHead, MEM_POOL *_mem);
 
 extern void desalloc_Block(GenericBlock _memHead, MEM_POOL *_mem);
+
 // Calculator Blocks Size
 extern Size calBlock(uint _index, MEM_POOL *_mem);
 extern Size calSegSize(Address _memHead, MEM_POOL *_mem);

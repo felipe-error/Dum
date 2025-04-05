@@ -4,20 +4,32 @@
 #define DUM_EXTYPE
 #include <Dum/Interface.h>
 #include <Dum/Pool.h>
-#include <Dum/Vector.h>
+#include <Dum/List.h>
 struct section {
   TEXT_char iName;
   ByteWidth iSize;
   MEM_Local iLocal;
 };
 typedef struct section Section;
-MAKE_StaticVector(Section_list, Section, Section_LIMIT);
+MAKE_StaticList(Section_list, Section, Section_LIMIT);
 
-struct tape {
-  Section_list iSections; 
-  TEXT_char iName;
+struct tape {  
+  Section_list iSections;
+  uint sCount;
+  Memory iMem;
+  Memory mHead;
+  MEM_Size mSize;
 };
 typedef struct tape TAPE;
 
+void swap_MEM_in_TAPE();
+ERROR add_Element_in_TAPE(); 
+
+Data fetch_Element_in_TAPE();
+
+#define INIT_TAPE(tape)
+
+#define TAPE_ADD()
+#define TAPE_FETCH()
 
 #endif // !TAPE_SYSTEM

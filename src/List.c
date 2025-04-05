@@ -35,7 +35,7 @@ void swap_MEM_and_COPY(DynamicalList *_dest, Memory _mem, MEM_Size _size) {
   }	
 } 
 
-ERROR add_Element(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem) {
+ERROR add_Element_in_List(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem) {
   if(_dtSize < _size) {
     for(ByteWidth i = 0; i < _dtSize; i++)
       MEM_COPY_BYTE((((Byte*)*_mem) + i), (((Byte*)_dt) + i));

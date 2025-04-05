@@ -14,14 +14,14 @@ struct dyVec {
   MEM_Size iDtSize;
   Expected *iHead;
 };
-typedef struct dyVec DynamicalList, List;
+typedef struct dyVec DynamicalList;
 
 extern MEM_Local cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit);
 
 extern void swap_MEM(DynamicalList *_dest, Memory _mem, MEM_Size _size);
 extern void swap_MEM_and_COPY(DynamicalList *_dest, Memory _mem, MEM_Size _size);
 
-extern ERROR add_Element(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem);
+extern ERROR add_Element_in_List(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem);
 
 #define MAKE_StaticList(name, type, limit) \
 typedef struct { type iData[limit]; MEM_Size iDtSize; type *iHead; } name 
@@ -47,7 +47,7 @@ typedef struct { type *iData; MEM_Size iDtSize; type *iHead; } name
 #define GET_ARRAY(list) \
 (list.iData)
 #define List_ADD(list, data, type) \
-(add_Element(sizeof(type), data, SCRAPS(list), (Memory*)&list.iHead))
+(add_Element_In_List(sizeof(type), data, SCRAPS(list), (Memory*)&list.iHead))
 
 
 #endif // !BY_LIST
