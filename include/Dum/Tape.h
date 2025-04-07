@@ -22,14 +22,21 @@ struct tape {
 };
 typedef struct tape TAPE;
 
-void swap_MEM_in_TAPE();
-ERROR add_Element_in_TAPE(); 
+void Swap_MEM_in_TAPE(TAPE *_dest, Memory _mem, MEM_Size _size);
 
-Data fetch_Element_in_TAPE();
+Supply Fetch_Element_in_TAPE();
 
-#define INIT_TAPE(tape)
+#define INIT_TAPE(tape)                                    \
+INIT_StaticList((tape).iSections); (tape).sCount = 0;      \
+(tape).iMem = NULL; (tape).mHead = NULL; (tape).mSize = 0 
 
-#define TAPE_ADD()
-#define TAPE_FETCH()
+#define TAPE_SWAPPER(tape, mem, memsize)
+
+#define TAPE_TOTAL(tape) ((tape).mSize)
+#define TAPE_SIZE(tape) (())
+
+#define TAPE_ADD(tape, data, dtsize) \
+(Add_Element(dtsize,  data, tapem))
+#define TAPE_FETCH(tape, text)  
 
 #endif // !TAPE_SYSTEM

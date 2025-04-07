@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 // Pool Funcs
-void alloc_MEMPOOL(Size _count ,MEM_POOL *_allo) {
+void Alloc_MEMPOOL(Size _count ,MEM_POOL *_allo) {
   _allo->iSize = (_count - (sizeof(Byte*) + sizeof(int)));
 
   ALLOC_MEM(_allo->iMem, _count);
@@ -29,7 +29,7 @@ void desalloc_MEMPOOL(MEM_POOL *_des) {
 }
 
 // Block Funcs
-StaticBlock alloc_StaticBlock(int _size, MEM_POOL *_mem) {
+StaticBlock Alloc_StaticBlock(int _size, MEM_POOL *_mem) {
   if(_size <= MAX_BLOCK_SIZE(_mem)) { 
     Byte *mem = ACCESS_MEM(_mem->iHead);
     Byte *nextPtr = MEM_READ_PTR(_mem->iHead);
@@ -47,39 +47,27 @@ void Desalloc_Block(GenericBlock _memHead, MEM_POOL *_mem) {
   _mem->iHead = (_mem->iMem + pos);
 }
 
-DynamicalBlock alloc_DynamicalBlock(int _blockSize, MEM_POOL *_mem) { 
-  Size blockMaxSize = MAX_BLOCK_SIZE(_mem); 
-  Byte4 *alloInt;
-  Byte *mem = (_mem->iHead + sizeof(Byte*));
-  Byte *nextPtr = *(Byte**)_mem->iHead;
-
-  Size blockIndex = calIndex(mem, _mem); 
+DynamicalBlock Alloc_DynamicalBlock(int _blockSize, MEM_POOL *_mem) { 
+  ByteWidth bloMax = MAX_BLOCK_SIZE(_mem);
+  MEM_Local bloIndex = calIndex(ACCESS_MEM(_mem->iHead), _mem); 
+  Byte *mem = ACCESS_MEM(_mem->iHead);
+  Byte *memEnd;
+  Byte *nextPtr = MEM_READ_PTR(_mem->iHead);
 
   if (nextPtr != NULL) {
-     if(_blockSize < (blockMaxSize - sizeof(Byte4))) {
-      alloInt = (Byte4*)(_mem->iHead + (sizeof(Byte*) + 
-      (blockMaxSize - sizeof(Byte4))));  
-      COPY_BYTES(alloInt, _blockSize);
-      _mem->iEnd[blockIndex + 1] = (_mem->iHead + (sizeof(Byte*) +
-        (blockMaxSize - sizeof(Byte4))));
+     if(_blockSize < (bloMax - sizeof(Byte4))) {
+       memEnd = (mem + (bloMax - sizeof(ByteWidth)));
+       MEM_COPY_GENERIC(memEnd, _blockSize, ByteWidth);  
+       _mem->iEnd[bloIndex + 1] = memEnd;
     } else {
-       alloInt = (Byte4*)(_mem->iHead + sizeof(Byte*) + 
-        (blockMaxSize - sizeof(Byte4)));  
-      COPY_BYTES(alloInt, (blockMaxSize - sizeof(Byte4)));
-      _mem->iEnd[blockIndex + 1] = (_mem->iHead + (sizeof(Byte*) +
-        (blockMaxSize - sizeof(Byte4))));
+       memEnd = (mem + (bloMax - sizeof(ByteWidth)));
+       MEM_COPY_GENERIC(memEnd, (bloMax - sizeof(ByteWidth)), ByteWidth);  
+       _mem->iEnd[bloIndex + 1] = memEnd;
     }
     _mem->iHead = nextPtr;
      return mem;
   }
   return NULL;
-}
-void reallocBlock(int _resize, Address _memHead, MEM_POOL *_mem) {
-  Size memPos = calPos(_memHead, _mem);
-  Size blockMaxSize = MAX_BLOCK_SIZE(_mem);
-  Byte4 *allocInt = (Byte4*)(_mem->iMem + (sizeof(Byte*)) + 
-    (memPos + (blockMaxSize - sizeof(Byte4))));
-  *allocInt = _resize;
 }
 
 // Calculator Funcs
@@ -123,23 +111,9 @@ Size calIndex(Address _memHead, MEM_POOL *_mem) {
 }
 
 
-// Segment Funcs
-void Static_Segmetation(Size _bSize, MEM_POOL *_mem) {
-  Size memSize = _mem->iSize;
-  MEM_COPY_INT((_mem->iMem + (memSize + sizeof(Byte*))), _bSize);
-
-  for(uint32_t i = 0; i < floor(((double)memSize / (sizeof(Byte**) + _bSize))); i++) {
-    if(i < (floor(((double)memSize / (sizeof(Byte**) + _bSize))) - 1))
-    MEM_COPY_PTR(JUMP_INTO_MEM(_mem->iMem, _bSize, i), JUMP_INTO_MEM(_mem->iMem, _bSize, (i + 1)));
-    else MEM_COPY_PTR(JUMP_INTO_MEM(_mem->iMem, _bSize, i), NULL);
-  }
-}
-
-void Dynamical_Segmetation(Size _blockSize, MEM_POOL *_mem) {
-  Size memSize = _mem->iSize;
-  Byte **alloPtr;
-  Byte4 *alloInt = (Byte4*)(_mem->iMem + (memSize + sizeof(Byte*)));
-  COPY_BYTES(alloInt, _blockSize);
+void MEM_Segmetation(ByteWidth _blockSize, MEM_POOL *_mem) {
+  MEM_Size memSize = _mem->iSize;
+  MEM_COPY_GENERIC(JUMP_INTO_MEM(_mem->iMem, memSize, 1), _blockSize, ByteWidth);
 
   Byte **endpoints = calloc((Size)
                            floor(((double)memSize / 
@@ -149,9 +123,13 @@ void Dynamical_Segmetation(Size _blockSize, MEM_POOL *_mem) {
   _mem->iEnd = endpoints;
 
   for(uint32_t i = 0; i < floor(((double)memSize / (sizeof(Byte**) + _blockSize))); i++) {
-    alloPtr = (Byte**)(_mem->iMem + (sizeof(Byte*) + _blockSize) * i);
     if(i < (floor(((double)memSize / (sizeof(Byte*) + _blockSize))) - 1))
-      COPY_BYTES(alloPtr, &_mem->iMem[(sizeof(Byte*) + _blockSize) * (i + 1)]); 
-    else *alloPtr = NULL;
+      MEM_COPY_PTR(
+      JUMP_INTO_MEM(_mem->iMem, _blockSize, (i)), 
+      JUMP_INTO_MEM(_mem->iMem, _blockSize, (i + 1))); 
+    else 
+      MEM_COPY_PTR(
+      JUMP_INTO_MEM(_mem->iMem, _blockSize, i), 
+      NULL); 
   }
 }

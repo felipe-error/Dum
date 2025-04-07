@@ -11,7 +11,7 @@
 #define INTERFACE_TYPES
 
 typedef uint64_t           Byte8;
-typedef uint32_t           Byte4, uint, ByteWidth;
+typedef uint32_t           Byte4, uint;
 typedef uint16_t           Byte2;
 typedef uint8_t            Byte, Expected;
 typedef void               By404,  *Address, *Memory, *Data;
@@ -19,15 +19,15 @@ typedef const char*        TEXT_char;
 typedef const char* const  STATIC_char;
 typedef int8_t             SMALL, int8;
 typedef int16_t            SHORT, int16;
-typedef int16_t            INT, ERROR, int32;
+typedef int16_t            INT, ByteWidth, ERROR, int32;
 typedef int64_t            LONG, int64;
 typedef size_t             Size, MEM_Local, MEM_Size;
 
-struct supply {
+struct data_reg {
   Data iDt;
   MEM_Size iSize;
 };
-typedef struct supply Supply;
+typedef struct datareg dtRegister;
 
 #endif // !INTEFACE_TYPES
 
@@ -79,6 +79,7 @@ typedef struct supply Supply;
 #define MEM_READ_PTR(head) (*(void**)(head))
 
 #define MEM_READ_GENERIC(head, type) (*(type*)dest)
+
 
 #endif // !INTERFACE_MACROS
 

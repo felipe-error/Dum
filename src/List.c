@@ -1,7 +1,7 @@
 #include <Dum/Interface.h>
 #include <Dum/List.h>
 
-MEM_Local cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit) {
+MEM_Local Cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit) {
   for(Size i = 0; i < limit; i++) {
     if((((Byte*)_mem) + i) == (Byte*)_head)
       return i;
@@ -9,17 +9,13 @@ MEM_Local cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit) {
   return HEAD_NOT_FOUND;
 }
 
-void swap_HEAD(StaticList *_dest){
-  _dest->iHead = ( _dest->iData + 0 ); 
-}
-
-void swap_MEM(DynamicalList *_dest, Memory _mem, MEM_Size _size) {
+void Swap_MEM_in_LIST(DynamicalList *_dest, Memory _mem, MEM_Size _size) {
   _dest->iData = _mem;
   _dest->iDtSize = _size;
   _dest->iHead = _mem;
 }
 
-void swap_MEM_and_COPY(DynamicalList *_dest, Memory _mem, MEM_Size _size) {
+void Swap_MEM_and_COPY_in_LIST(DynamicalList *_dest, Memory _mem, MEM_Size _size) {
   if(!((_mem == NULL) && (_size <= 0))) {
     for(Size i = 0; i < (_dest->iDtSize); i++) {
       if(i < _size) 
@@ -35,7 +31,7 @@ void swap_MEM_and_COPY(DynamicalList *_dest, Memory _mem, MEM_Size _size) {
   }	
 } 
 
-ERROR add_Element_in_List(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem) {
+ERROR Add_Element(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem) {
   if(_dtSize < _size) {
     for(ByteWidth i = 0; i < _dtSize; i++)
       MEM_COPY_BYTE((((Byte*)*_mem) + i), (((Byte*)_dt) + i));

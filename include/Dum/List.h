@@ -1,5 +1,5 @@
-#ifndef BY_LIST
-#define BY_LIST
+#ifndef LIST_SYSTEM
+#define LIST_SYSTEM
 
 #include <Dum/Interface.h>
 
@@ -16,12 +16,12 @@ struct dyVec {
 };
 typedef struct dyVec DynamicalList;
 
-extern MEM_Local cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit);
+extern MEM_Local Cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit);
 
-extern void swap_MEM(DynamicalList *_dest, Memory _mem, MEM_Size _size);
-extern void swap_MEM_and_COPY(DynamicalList *_dest, Memory _mem, MEM_Size _size);
+extern void Swap_MEM_in_LIST(DynamicalList *_dest, Memory _mem, MEM_Size _size);
+extern void Swap_MEM_and_COPY_in_LIST(DynamicalList *_dest, Memory _mem, MEM_Size _size);
 
-extern ERROR add_Element_in_List(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem);
+extern ERROR Add_Element(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem);
 
 #define MAKE_StaticList(name, type, limit) \
 typedef struct { type iData[limit]; MEM_Size iDtSize; type *iHead; } name 
@@ -35,19 +35,21 @@ typedef struct { type *iData; MEM_Size iDtSize; type *iHead; } name
 #define INIT_DynamicalList(list) \
 (list).iDtSize = 0; (list).iData = NULL; (list).iHead = NULL
 
-#define List_LIMIT(list) \
+#define LIST_SWAPPER(list, mem, memsize) \
+Swap_MEM_in_LIST((DynamicalList*)&list, mem, Head)
+
+#define LIST_LIMIT(list) \
 ((list).iDtSize)
 
-#define List_SIZE(list) \
-(cal_HeadPos((Memory)(list).iData, (Memory)(list).iHead, (list).iDtSize))
+#define LIST_SIZE(list) \
+(Cal_HeadPos((Memory)(list).iData, (Memory)(list).iHead, (list).iDtSize))
 
 #define SCRAPS(list) \
 (List_LIMIT(list) - List_SIZE(list))  
 
-#define GET_ARRAY(list) \
+#define DATA_LIST(list) \
 (list.iData)
-#define List_ADD(list, data, type) \
-(add_Element_In_List(sizeof(type), data, SCRAPS(list), (Memory*)&list.iHead))
+#define LIST_ADD(list, data, dtsize) \
+(Add_Element(datasize, data, SCRAPS(list), (Memory*)&list.iHead))
 
-
-#endif // !BY_LIST
+#endif // !LIST_SYSTEM
