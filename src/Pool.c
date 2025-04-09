@@ -20,7 +20,7 @@ void Alloc_MEMPOOL(Size _count ,MEM_POOL *_allo) {
   MEM_COPY_PTR(*_allo->iEnd, NULL);
 
 }
-void desalloc_MEMPOOL(MEM_POOL *_des) {
+void Desalloc_MEMPOOL(MEM_POOL *_des) {
   FREE(_des->iMem);
   FREE(_des->iEnd);
   _des->iMem = NULL;
@@ -29,8 +29,8 @@ void desalloc_MEMPOOL(MEM_POOL *_des) {
 }
 
 // Block Funcs
-StaticBlock Alloc_StaticBlock(int _size, MEM_POOL *_mem) {
-  if(_size <= MAX_BLOCK_SIZE(_mem)) { 
+StaticBlock Alloc_StaticBlock(ByteWidth _chcsize, MEM_POOL *_mem) {
+  if(_chcsize <= MAX_BLOCK_SIZE(_mem)) { 
     Byte *mem = ACCESS_MEM(_mem->iHead);
     Byte *nextPtr = MEM_READ_PTR(_mem->iHead);
 
@@ -41,13 +41,16 @@ StaticBlock Alloc_StaticBlock(int _size, MEM_POOL *_mem) {
   }
   return INVALID_BLOCK;
 }
-void Desalloc_Block(GenericBlock _memHead, MEM_POOL *_mem) {
-  Size pos = calPos(_memHead, _mem);
-  MEM_COPY_PTR((_mem->iMem + pos), _mem->iHead);
-  _mem->iHead = (_mem->iMem + pos);
+StaticBlock Realloc_StaticBlock(ByteWidth _chcSize, StaticBlock _memHead, MEM_POOL *_mem) {
+  if(_memHead != NULL) {
+  Desalloc_Block(_memHead, _mem);
+  return BLOLLOC(StaticBlock, _chcSize, _mem);
+  } else {
+    return NULL;
+  }
 }
 
-DynamicalBlock Alloc_DynamicalBlock(int _blockSize, MEM_POOL *_mem) { 
+DynamicalBlock Alloc_DynamicalBlock(ByteWidth _blockSize, MEM_POOL *_mem) { 
   ByteWidth bloMax = MAX_BLOCK_SIZE(_mem);
   MEM_Local bloIndex = calIndex(ACCESS_MEM(_mem->iHead), _mem); 
   Byte *mem = ACCESS_MEM(_mem->iHead);
@@ -68,6 +71,21 @@ DynamicalBlock Alloc_DynamicalBlock(int _blockSize, MEM_POOL *_mem) {
      return mem;
   }
   return NULL;
+}
+DynamicalBlock Realloc_DynamicalBlock(ByteWidth _setSize, DynamicalBlock _memHead, MEM_POOL *_mem) {
+   if(_memHead != NULL) {
+  Desalloc_Block(_memHead, _mem);
+  return BLOLLOC(DynamicalBlock, _setSize, _mem);
+  } else {
+    return NULL;
+  }	
+}
+
+
+void Desalloc_Block(GenericBlock _memHead, MEM_POOL *_mem) {
+  Size pos = calPos(_memHead, _mem);
+  MEM_COPY_PTR((_mem->iMem + pos), _mem->iHead);
+  _mem->iHead = (_mem->iMem + pos);
 }
 
 // Calculator Funcs

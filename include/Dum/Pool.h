@@ -18,15 +18,15 @@ typedef struct memPool MEM_POOL;
 
 // Alloc/Pool Pool
 extern void Alloc_MEMPOOL(Size _size, MEM_POOL *_allo);
-extern void desalloc_MEMPOOL(MEM_POOL *_des);
+extern void Desalloc_MEMPOOL(MEM_POOL *_des);
 // Alloc/Desalloc Blocks
-extern DynamicalBlock Alloc_DynamicalBlock(int _setSize, MEM_POOL *_mem);
-extern DynamicalBlock realloc_DynamicalBlock(int _setSize, DynamicalBlock _memHead, MEM_POOL *_mem);
+extern DynamicalBlock Alloc_DynamicalBlock(ByteWidth _setSize, MEM_POOL *_mem);
+extern DynamicalBlock Realloc_DynamicalBlock(ByteWidth _setSize, DynamicalBlock _memHead, MEM_POOL *_mem);
 
-extern StaticBlock Alloc_StaticBlock(int _chcSize, MEM_POOL *_mem);
-extern StaticBlock realloc_StaticBlock(int _chcSize, StaticBlock _memHead, MEM_POOL *_mem);
+extern StaticBlock Alloc_StaticBlock(ByteWidth _chcSize, MEM_POOL *_mem);
+extern StaticBlock Realloc_StaticBlock(ByteWidth _chcSize, StaticBlock _memHead, MEM_POOL *_mem);
 
-extern void desalloc_Block(GenericBlock _memHead, MEM_POOL *_mem);
+extern void Desalloc_Block(GenericBlock _memHead, MEM_POOL *_mem);
 
 // Calculator Blocks Size
 extern Size calBlock(uint _index, MEM_POOL *_mem);
@@ -42,8 +42,8 @@ extern void MEM_Segmetation(ByteWidth _blockSize, MEM_POOL *_mem);
 #define BLOLLOC(type, size, pool) Alloc_##type(size, pool) 
 #define REBLOC(type, head, size, pool) realloc_##type(size, head, pool)
 
-#define FREE_MEMPOOL(des) desalloc_MEMPOOL(des)
-#define FREE_BLOCK(mem, head) desalloc_Block(head, mem)
+#define FREE_MEMPOOL(des) Desalloc_MEMPOOL(des)
+#define FREE_BLOCK(mem, head) Desalloc_Block(head, mem)
 
 #define MAX_BLOCK_SIZE(pool) \
 MEM_READ_INT(ACCESS_MEM(*pool->iEnd))
