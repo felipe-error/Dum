@@ -54,11 +54,10 @@ typedef struct supply Supply;
 
 // Navegation In MEM
 #define ACCESS_MEM(head) ((head) + sizeof(Byte*))
-#define INACCESSIBLE_MEM(head) ((head) - sizeof(Byte*))
-
 #define JUMP_INTO_MEM(mem, blockSize, count) ((mem) + ((blockSize + sizeof(Byte*)) * count))
 
 // MEM Operations
+#define INTERABLE_MEM(mem) ((Byte*)mem)
 #define MEM_COPY_BYTE(dest, src) (*(dest) = *(src))
 #define MEM_COPY_SHORT(dest, src) (*(short*)(dest) = (src))
 #define MEM_COPY_INT(dest, src) (*(int*)(dest) = (src))

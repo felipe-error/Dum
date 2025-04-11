@@ -22,6 +22,7 @@ extern void Swap_MEM_in_LIST(DynamicalList *_dest, Memory _mem, MEM_Size _size);
 extern void Swap_MEM_and_COPY_in_LIST(DynamicalList *_dest, Memory _mem, MEM_Size _size);
 
 extern ERROR Add_Element(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem);
+extern ERROR Remove_Element(MEM_Local index, ByteWidth _dtSize, MEM_Size _memSize, Memory *_head, Memory *_mem);
 
 #define MAKE_StaticList(name, type, limit) \
 typedef struct { type iData[limit]; MEM_Size iDtSize; type *iHead; } name 
@@ -36,7 +37,7 @@ typedef struct { type *iData; MEM_Size iDtSize; type *iHead; } name
 (list).iDtSize = 0; (list).iData = NULL; (list).iHead = NULL
 
 #define LIST_SWAPPER(list, mem, memsize) \
-Swap_MEM_in_LIST((DynamicalList*)&list, mem, Head)
+Swap_MEM_in_LIST((DynamicalList*)&list, mem, memsize)
 
 #define LIST_LIMIT(list) \
 ((list).iDtSize)
@@ -44,12 +45,15 @@ Swap_MEM_in_LIST((DynamicalList*)&list, mem, Head)
 #define LIST_SIZE(list) \
 (Cal_HeadPos((Memory)(list).iData, (Memory)(list).iHead, (list).iDtSize))
 
-#define SCRAPS(list) \
-(List_LIMIT(list) - List_SIZE(list))  
+#define LIST_SCRAPS(list) \
+(LIST_LIMIT(list) - LIST_SIZE(list))  
 
-#define DATA_LIST(list) \
-(list.iData)
+#define DATA_LIST(list, type) \
+((type*)list.iData)
 #define LIST_ADD(list, data, dtsize) \
-(Add_Element(datasize, data, SCRAPS(list), (Memory*)&list.iHead))
+(Add_Element(dtsize, data, LIST_SCRAPS(list), (Memory*)&list.iHead))
 
+#define LIST_REMOVE(list, index, type) \
+Remove_Element(((index) * sizeof(type)), sizeof(type), LIST_SIZE(list), \
+(Memory*)&(list).iHead, (Memory*)&(list).iData)
 #endif // !LIST_SYSTEM
