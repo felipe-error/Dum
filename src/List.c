@@ -1,5 +1,6 @@
 #include <Dum/Interface.h>
 #include <Dum/List.h>
+#include <stdio.h>
 
 MEM_Local Cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit) {
   for(Size i = 0; i < limit; i++) {
@@ -40,11 +41,14 @@ ERROR Add_Element(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem) {
   } else return ADD_FAILED; 
 }
 
-ERROR Remove_Element(MEM_Local _index, ByteWidth _dtSize, MEM_Size _memSize, Memory *_head, Memory *_mem) {
+ERROR Remove_Element(MEM_Local _index, ByteWidth _dtSize, MEM_Size _memSize,
+Memory *_head, Memory _mem) {
   if(_index < _memSize) {
     for(Size i = 0; i < _dtSize; i++)
-      MEM_COPY_BYTE((((Byte*)*_mem) + i), (((Byte*)*_mem) + (_memSize + i)));
-    *_head = (((Byte*)*_mem) + (_memSize - _dtSize)); 
+      MEM_COPY_BYTE(
+	       (((Byte*)_mem) + (_index + i)), 
+	       (((Byte*)_mem) + ((_memSize - _dtSize) + i)));
+    *_head = (((Byte*)_mem) + (_memSize - _dtSize)); 
     return NO_ERROR;
   } else return 0;
 }

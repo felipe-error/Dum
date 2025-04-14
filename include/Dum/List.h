@@ -14,7 +14,7 @@ struct dyVec {
   MEM_Size iDtSize;
   Expected *iHead;
 };
-typedef struct dyVec DynamicalList;
+typedef struct dyVec DynamicalList, GenericList;
 
 extern MEM_Local Cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit);
 
@@ -22,7 +22,8 @@ extern void Swap_MEM_in_LIST(DynamicalList *_dest, Memory _mem, MEM_Size _size);
 extern void Swap_MEM_and_COPY_in_LIST(DynamicalList *_dest, Memory _mem, MEM_Size _size);
 
 extern ERROR Add_Element(ByteWidth _dtSize, Data _dt, MEM_Size _size, Memory *_mem);
-extern ERROR Remove_Element(MEM_Local index, ByteWidth _dtSize, MEM_Size _memSize, Memory *_head, Memory *_mem);
+extern ERROR Remove_Element(MEM_Local index, ByteWidth _dtSize, MEM_Size _memSize, 
+Memory *_head, Memory _mem);
 
 #define MAKE_StaticList(name, type, limit) \
 typedef struct { type iData[limit]; MEM_Size iDtSize; type *iHead; } name 
@@ -54,6 +55,6 @@ Swap_MEM_in_LIST((DynamicalList*)&list, mem, memsize)
 (Add_Element(dtsize, data, LIST_SCRAPS(list), (Memory*)&list.iHead))
 
 #define LIST_REMOVE(list, index, type) \
-Remove_Element(((index) * sizeof(type)), sizeof(type), LIST_SIZE(list), \
-(Memory*)&(list).iHead, (Memory*)&(list).iData)
+Remove_Element((index * sizeof(type)), sizeof(type), LIST_SIZE(list), \
+(Memory*)&list.iHead, (Memory)list.iData)
 #endif // !LIST_SYSTEM
