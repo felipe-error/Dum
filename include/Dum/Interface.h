@@ -20,7 +20,7 @@ typedef const char* const  STATIC_char;
 typedef int8_t             SMALL, int8;
 typedef int16_t            SHORT, int16;
 typedef int16_t            INT, ERROR, int32;
-typedef int64_t            LONG, int64;
+typedef int64_t            LONG, SUPER,  int64;
 typedef size_t             Size, MEM_Local, MEM_Size;
 
 struct supply {

@@ -1,6 +1,5 @@
 #include <Dum/Interface.h>
 #include <Dum/List.h>
-#include <stdio.h>
 
 MEM_Local Cal_HeadPos(Memory _mem, Memory _head, MEM_Size limit) {
   for(Size i = 0; i < limit; i++) {

@@ -42,17 +42,28 @@ Swap_MEM_in_LIST((DynamicalList*)&list, mem, memsize)
 
 #define LIST_LIMIT(list) \
 ((list).iDtSize)
+#define LISTPTR_LIMIT(list) \
+((list)->iDtSize)
 
 #define LIST_SIZE(list) \
 (Cal_HeadPos((Memory)(list).iData, (Memory)(list).iHead, (list).iDtSize))
+#define LISTPTR_SIZE(list) \
+(Cal_HeadPos((Memory)(list)->iData, (Memory)(list)->iHead, (list)->iDtSize))
 
 #define LIST_SCRAPS(list) \
-(LIST_LIMIT(list) - LIST_SIZE(list))  
+(LIST_LIMIT(list) - LIST_SIZE(list)) 
+#define LISTPTR_SCRAPS(list) \
+(LISTPTR_LIMIT(list) - LISTPTR_SIZE(list))  
 
 #define DATA_LIST(list, type) \
 ((type*)list.iData)
+#define DATA_LISTPTR(list, type) \
+((type*)list->iData)
+
 #define LIST_ADD(list, data, dtsize) \
 (Add_Element(dtsize, data, LIST_SCRAPS(list), (Memory*)&list.iHead))
+#define LISTPTR_ADD(list, data, dtsize) \
+(Add_Element(dtsize, data, LISTPTR_SCRAPS(list), (Memory*)&list->iHead))
 
 #define LIST_REMOVE(list, index, type) \
 Remove_Element((index * sizeof(type)), sizeof(type), LIST_SIZE(list), \
