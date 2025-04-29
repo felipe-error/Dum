@@ -1,4 +1,4 @@
-#Dont's Memory Unsafed 
+# Dont's Memory Unsafed 
 
-##Descrição 
+## Descrição 
 é um projeto que adiciona alguns para ajuda no gerenciamento de memoria em C
