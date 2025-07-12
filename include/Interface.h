@@ -77,7 +77,7 @@ typedef struct supply Supply;
 #define MEM_READ_LONG(head) (*(long long*)(head))
 #define MEM_READ_PTR(head) (*(void**)(head))
 
-#define MEM_READ_GENERIC(head, type) (*(type*)dest)
+#define MEM_READ_GENERIC(head, type) (*(type*)head)
 
 #endif // !INTERFACE_MACROS
 
